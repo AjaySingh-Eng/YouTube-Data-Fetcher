@@ -15,15 +15,33 @@
 # Setup Instructions
 
 ## Clone the Repository
-- git clone https://github.com/your-username/YouTube-Data-Fetcher.git
-- cd YouTube-Data-Fetcher
+```bash
+ git clone https://github.com/your-username/YouTube-Data-Fetcher.git
+ cd YouTube-Data-Fetcher
+```
 
 ## Create a Virtual Environment
-- python -m venv env
-- env\Scripts\activate
+```bash
+ python -m venv env
+ env\Scripts\activate
+```
 
 ## Install Dependencies
-- pip install -r requirements.txt
+```bash
+ pip install -r requirements.txt
+```
+
+## These four dependencies are critical for the project to function properly.
+- requirements.txt
+```bash
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+pandas
+openpyxl
+python-dotenv
+```
 
 # Instructions for Creating a YouTube API Key:
 ## Sign in to Google Cloud Console:
@@ -55,48 +73,73 @@
 - Store the API Key Securely:
 
 ## Store your API key in a .env file in your project directory:
+```bash
 YOUTUBE_API_KEY=YOUR_API_KEY_HERE
+```
 - Make sure not to share or expose your API key publicly (e.g., in a GitHub repository).
 - Set Up dotenv in Your Project (Optional):
 
 ## To load your API key from a .env file, install the python-dotenv package:
+```bash
 pip install python-dotenv
+```
 
-- In your script, load the environment variables:
+## In your script, load the environment variables:
+```bash
 from dotenv import load_dotenv
 import os
 load_dotenv()
 api_key = os.getenv("YOUTUBE_API_KEY")
+if not api_key:
+    raise ValueError("API key not found. Please check your .env file.")
+```
 
 ## Notes:
 Quota Limit: Each API key has a quota limit. Monitor your usage in the Google Cloud Console to avoid exceeding your quota.
 Billing: Enabling billing on your Google Cloud account may grant you additional quotas.
 
-## Example API Call (Python):
+## API Call (Python):
+```bash
 from googleapiclient.discovery import build
+import os
+from dotenv import load_dotenv
 
-api_key = 'YOUR_API_KEY_HERE'
+# Load API key from .env file
+load_dotenv()
+api_key = os.getenv("YOUTUBE_API_KEY")
+
+# Initialize YouTube API client
 youtube = build('youtube', 'v3', developerKey=api_key)
 
-request = youtube.channels().list(
-    part="snippet,contentDetails,statistics",
-    forUsername="GoogleDevelopers"
+# Example channel handle
+channel_url = "https://www.youtube.com/@GoogleDevelopers"
+
+# Extract the channel handle (the part after '@')
+handle = channel_url.split('@')[-1]
+
+# API call to get channel ID from handle
+request = youtube.search().list(
+    part="snippet",
+    q=handle,
+    type="channel",
+    maxResults=1
 )
 response = request.execute()
 
+# Print response
 print(response)
-
-
-
-
-
+```
 
 ## Set Up API Key
 - Create a .env file in the project root and add:
-- YOUTUBE_API_KEY=your_api_key_here
+```bash
+YOUTUBE_API_KEY=your_api_key_here
+```
 
 ## Running the Script
-- python src/youtube_data_fetcher.py
+```bash
+python src/youtube_data_fetcher.py
+```
 
 # Output:
 ## The script will create an Excel file (YouTube_Video_Data.xlsx) containing:
@@ -104,9 +147,17 @@ print(response)
 - Sheet 2: Comments data with details like comment text, author name, and published date.
 
 # Dependencies
-- Python libraries: google-api-python-client, pandas, openpyxl, python-dotenv
+- Python libraries:
+  ```bash
+  google-api-python-client
+  pandas
+  openpyxl
+  python-dotenv
+  ```
 - Install dependencies with:
-- pip install -r requirements.txt
+  ```bash
+  pip install -r requirements.txt
+  ```
 
 # Error Handling
 - The script handles errors gracefully and prints informative error messages.
@@ -131,26 +182,31 @@ print(response)
 - Verify all files, including `README.md`, `requirements.txt`, and source code, are in your GitHub repository.
 - Confirm your `.env` file is excluded.
 - Push your latest changes to GitHub:
-- git add .
-- git commit -m "Final version of YouTube data fetcher project"
-- git push origin main
+```bash
+ git add .
+ git commit -m "Final version of YouTube data fetcher project"
+ git push origin main
+```
 
   # Explanation:
-- load_dotenv(): Loads the API key from .env file.
-- build(): Creates a YouTube API client instance.
-- get_channel_id(): Retrieves the channel ID using the channel handle.
-- get_videos(): Fetches all videos from the channel using pagination.
-- get_video_details(): Gets detailed information for each video.
-- get_video_comments(): Fetches the latest 100 comments and replies for each video.
-- main(): Combines the above functions, saves the video and comments data to an Excel file.
+
+ 1. load_dotenv(): Loads the API key from .env file.
+ 2. build(): Creates a YouTube API client instance.
+ 3. get_channel_id(): Retrieves the channel ID using the channel handle.
+ 4. get_videos(): Fetches all videos from the channel using pagination.
+ 5. get_video_details(): Gets detailed information for each video.
+ 6. get_video_comments(): Fetches the latest 100 comments and replies for each video.
+ 7. main(): Combines the above functions, saves the video and comments data to an Excel file.
+
 
 # Explanation of Each File/Directory:
-- src/: Contains the main Python script (youtube_data_fetcher.py).
-- .gitignore: Specifies files and directories that Git should ignore (e.g., .env, __pycache__, etc.).
-- .env: Holds sensitive information like the API key (should not be committed).
-- README.md: Provides project information, setup instructions, usage details, and more.
-- requirements.txt: Lists the required Python packages for easy installation with pip.
-- YouTube_Video_Data.xlsx: The generated Excel file containing the results (not included in Git to avoid large file uploads).
+
+ 1. src/: Contains the main Python script (youtube_data_fetcher.py).
+ 2. .gitignore: Specifies files and directories that Git should ignore (e.g., .env, __pycache__, etc.).
+ 3. .env: Holds sensitive information like the API key (should not be committed).
+ 4. README.md: Provides project information, setup instructions, usage details, and more.
+ 5. requirements.txt: Lists the required Python packages for easy installation with pip.
+ 6. YouTube_Video_Data.xlsx: The generated Excel file containing the results (not included in Git to avoid large file uploads).
 
 
 # File Structure
@@ -164,6 +220,7 @@ C:\youtube-data-fetcher\
     ├── README.md
     ├── requirements.txt
     └── YouTube_Video_Data.xlsx
+```
 
 
 
